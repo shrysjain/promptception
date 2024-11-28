@@ -45,7 +45,7 @@ function getMatchingCharacters(s1: string, s2: string): number {
 
 function getTranspositions(s1: string, s2: string): number {
   const s1Matches = [];
-  const s2Matches = [];
+  const s2Matches: number[] = [];
   const matchWindow = Math.max(s1.length, s2.length) / 2 - 1;
 
   for (let i = 0; i < s1.length; i++) {
@@ -105,8 +105,7 @@ export async function POST(req: NextRequest) {
     if (!imageUrl)
       throw new Error("Failed to generate image from guessed prompt.");
 
-    let similarityScore = calculateJaroWinkler(guessedPrompt, originalPrompt);
-    similarityScore = 10 * Math.sqrt(similarityScore); // Square root curve
+    const similarityScore = calculateJaroWinkler(guessedPrompt, originalPrompt);
 
     return NextResponse.json(
       {

@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Promptception  
 
-## Getting Started
+**Guess the prompt behind the AI-generated image!**  
 
-First, run the development server:
+Promptception is a fun and interactive guessing game where players analyze AI-generated images and try to figure out the original prompt used to create them. Test your creativity, imagination, and precision to climb the leaderboard!  
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🎮 Features  
+- **Infinite Gameplay**: Play endlessly with continuously generated images.  
+- **Score Accuracy**: Get graded on how close your prompt matches the original.  
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🚀 How to Play  
+1. **Get Started**: Open the game and view the AI-generated image.  
+2. **Guess the Prompt**: Enter what you think was used to generate the image.  
+3. **Score Points**: Get graded based on creativity and accuracy.  
+4. **Share With Friends**: Compare your results with others.  
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🛠️ Tech Stack  
+- **Frontend**: Built with [React.js](https://reactjs.org/) and [TailwindCSS](https://tailwindcss.com/).  
+- **Backend**: Powered by [Node.js](https://nodejs.org/) and the [OpenAI API](https://platform.openai.com/).  
+- **Hosting**: Deployed on [Vercel](https://vercel.com/).  
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 💡 Inspiration  
+Promptception was inspired by the creativity of AI tools and the challenge of understanding how machines interpret prompts. It’s a game that blends fun with the power of imagination.  
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🤝 Contributing  
+We welcome contributions! If you have ideas or find bugs, feel free to open an issue or submit a pull request.  
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 📜 License  
+This project is licensed under the [MIT License](LICENSE).  

@@ -1,101 +1,116 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useState } from "react";
+
+import Input from "@/components/input";
+import Loading from "@/components/loading";
+import Results from "@/components/results";
+import Header from "@/components/header";
+import Footer from "@/components/footer";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AlertCircle } from "lucide-react";
+
+export type OrginalGuess = {
+  imageUrl: string;
+  hints: string[];
+  prompt: string;
+};
+
+export type GuessScore = {
+  imageUrl: string;
+  similarityScore: number;
+};
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [userPrompt, setUserPrompt] = useState("");
+  const [originalGuess, setOriginalGuess] = useState<OrginalGuess>();
+  const [guessScore, setGuessScore] = useState<GuessScore>();
+  const [generating, setGenerating] = useState(false);
+  const [error, setError] = useState<string>();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+  const handleSubmit = async (prompt: string) => {
+    try {
+      setError(undefined);
+      setGenerating(true);
+      setUserPrompt(prompt);
+
+      const response = await fetch("/api/calculate-score", {
+        method: "POST",
+        body: JSON.stringify({
+          guessedPrompt: prompt,
+          originalPrompt: originalGuess?.prompt,
+        }),
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to calculate score");
+      }
+
+      const data = await response.json();
+      setGuessScore(data);
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Something went wrong");
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  const fetchData = async () => {
+    try {
+      setError(undefined);
+      const response = await fetch("/api/get-image");
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch image");
+      }
+
+      const data = await response.json();
+      setOriginalGuess(data);
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Failed to fetch data");
+      console.error("Failed to fetch data:", error);
+    }
+  };
+
+  const reset = () => {
+    setUserPrompt("");
+    setOriginalGuess(undefined);
+    setGuessScore(undefined);
+    setError(undefined);
+    fetchData();
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <main className="flex-1 container mx-auto px-4 py-6 md:py-8 lg:py-12">
+        {error ? (
+          <Alert variant="destructive" className="mb-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        ) : generating && originalGuess ? (
+          <Loading originalImage={originalGuess.imageUrl} />
+        ) : guessScore && originalGuess ? (
+          <Results
+            score={guessScore}
+            originalGuess={originalGuess}
+            userPrompt={userPrompt}
+            reset={reset}
+          />
+        ) : (
+          <Input onSubmit={handleSubmit} imageData={originalGuess} />
+        )}
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      <Footer />
     </div>
   );
 }
